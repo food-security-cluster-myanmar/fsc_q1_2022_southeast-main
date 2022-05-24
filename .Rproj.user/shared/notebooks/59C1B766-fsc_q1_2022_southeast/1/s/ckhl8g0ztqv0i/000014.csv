@@ -1,0 +1,6 @@
+"0",""
+"0","fsc_2021_se %>% "
+"0","  filter(activity_red == ""food distribution"" & unique_beneficiaries == ""Yes"" & !is.na(total_value_usd)) %>%"
+"0","  summarise(total_value_usd = sum(total_value_usd), "
+"0","            beneficiaries = sum(beneficiaries)) %>% "
+"0","  mutate(total_value_usd / beneficiaries)"

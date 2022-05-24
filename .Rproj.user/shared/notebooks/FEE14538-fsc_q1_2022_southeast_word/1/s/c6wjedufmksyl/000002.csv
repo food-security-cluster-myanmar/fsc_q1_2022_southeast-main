@@ -1,0 +1,33 @@
+"0","fsc %>%  "
+"0","  filter(hub == ""southeast"") %>% "
+"0","  mutate(strat_obj = str_to_upper(strat_obj)) %>% "
+"0","  sum_ben2(strat_obj, activity_red) %>% "
+"0","  rbind(tribble(~strat_obj, ~activity_red, ~beneficiaries, "
+"0","                ""SO_2"",""food distribution"", 0)) %>% "
+"0","  arrange(desc(beneficiaries)) %>% "
+"0","  pivot_wider(names_from = strat_obj, values_from = beneficiaries, values_fill = 0, names_prefix = ""ben_"") %>% "
+"0","  mutate(Total = ben_SO_1 + ben_SO_2 + ben_SO_3, "
+"0","         `%_ben` = round(Total / sum(Total) * 100, digits = 2)) %>% "
+"0","  relocate(ben_SO_1, .after = activity_red) %>% "
+"0","   rename(activity = activity_red) %>% "
+"0","  pander(caption = ""Breakdown of beneficiaries by activity in 2022/Q1"")"
+"1","
+---------------------------------------------------------------------------------
+           activity              ben_SO_1   ben_SO_3   ben_SO_2   Total    %_ben 
+------------------------------- ---------- ---------- ---------- -------- -------
+       food distribution          69,206       0          0       69,206   53.55 
+
+ crop, vegetable and seed kits      0        29,026       0       29,026   22.46 
+
+  multi-purpose cash transfer     28,900       0          0       28,900   22.36 
+
+     IGA and small grants           0        1,900        0       1,900    1.47  
+
+      vocational training           0         203         0        203     0.16  
+---------------------------------------------------------------------------------
+
+Table: Breakdown of beneficiaries by activity in 2022/Q1
+
+"
+"0","# kable(caption = ""Breakdown of beneficiaries by activity in 2022/Q1"", format.args = list(big.mark = "","")) %>% "
+"0","  # kable_classic_2(""striped"")"

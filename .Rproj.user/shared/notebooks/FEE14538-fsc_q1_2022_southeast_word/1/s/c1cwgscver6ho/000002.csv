@@ -1,0 +1,27 @@
+"0","fsc_se %>% "
+"0","  filter(!is.na(location_type)) %>% "
+"0","  group_by(rural_or_urban, location_type) %>% "
+"0","  summarise(locations = n(), "
+"0","            beneficiaries = sum(new_beneficiaries), .groups = ""drop"") %>%"
+"0","  mutate(`%_of_ben` = round(beneficiaries / sum(beneficiaries) * 100, digits = 2),"
+"0","         ben_per_location = round(beneficiaries / locations)) %>% "
+"0","  pander(caption = ""Breakdown of locations and beneficiaries"")"
+"1","
+--------------------------------------------------------------------------------------------
+  rural_or_urban    location_type   locations   beneficiaries   %_of_ben   ben_per_location 
+------------------ --------------- ----------- --------------- ---------- ------------------
+      Rural         Camp/IDP site      52          28,603        22.24           550        
+
+      Rural            Village         155         99,825        77.62           644        
+
+ Urban/Peri-Urban   Camp/IDP site       1            104          0.08           104        
+
+ Urban/Peri-Urban      Village          1            81           0.06            81        
+--------------------------------------------------------------------------------------------
+
+Table: Breakdown of locations and beneficiaries
+
+"
+"0","  # kable(caption = ""Breakdown of locations and beneficiaries by context"", "
+"0","  #       format.args = list(big.mark = "","")) %>% "
+"0","  # kable_classic_2(""striped"")"

@@ -1,0 +1,68 @@
+"0",""
+"0","fsc_se %>% "
+"0","  group_by(state, township, admin3_pcode_old) %>% "
+"0","  summarise(beneficiaries = sum(new_beneficiaries, na.rm = TRUE), .groups=""drop"") %>%"
+"0","  left_join(pin %>% select(admin3_pcode, target = fs_targeted), by = c(""admin3_pcode_old"" = ""admin3_pcode""), .groups = ""drop"") %>%"
+"0","  ungroup() %>% "
+"0","  arrange(desc(beneficiaries)) %>% "
+"0","  mutate(pc_beneficiaries = round(beneficiaries / sum(beneficiaries) * 100, digits = 2),  "
+"0","         pc_reached = round(beneficiaries / target * 100, digits = 2), "
+"0","         pc_reached = ifelse(is.infinite(pc_reached), 100, pc_reached), "
+"0","         target = round(target)) %>% "
+"0","  select(state, township, target, beneficiaries, `%_beneficiaries` = pc_beneficiaries, `%_reached` = pc_reached) %>% "
+"0","  "
+"0","  # head(11) %>% "
+"0","  pander(caption = ""Townships reached by number of beneficiaries"")"
+"1","
+-----------------------------------------------------------------------------------
+    state        township     target   beneficiaries   %_beneficiaries   %_reached 
+------------- -------------- -------- --------------- ----------------- -----------
+    Kayah         Hpruso      4,000       30,215            23.38          755.4   
+
+    Kayin        Myawaddy     5,000       20,843            16.13          416.9   
+
+    Kayah         Demoso      25,000      16,315            12.62          65.26   
+
+    Kayin         Hpapun      44,320      14,444            11.18          32.59   
+
+     Mon         Kyaikto      10,000       8,284            6.41           82.84   
+
+    Kayin       Hlaingbwe     15,000       7,778            6.02           51.85   
+
+     Mon        Chaungzon       0          7,181            5.56            100    
+
+     Mon          Bilin       5,000        6,031            4.67           120.6   
+
+     Mon          Paung         0          4,254            3.29            100    
+
+    Kayin      Thandaunggyi   7,000        2,811            2.18           40.16   
+
+     Mon        Mawlamyine      0          2,691            2.08            100    
+
+     Mon        Kyaikmaraw      0          2,570            1.99            100    
+
+    Kayah         Shadaw       500         1,606            1.24           321.2   
+
+    Kayin       Kawkareik     5,000        1,432            1.11           28.64   
+
+    Kayin      Kyainseikgyi   5,000        1,390            1.08           27.8    
+
+    Kayah         Loikaw      25,000        815             0.63           3.26    
+
+ Tanintharyi      Dawei       5,667         314             0.24           5.54    
+
+     Mon            Ye        10,000        180             0.14            1.8    
+
+ Tanintharyi      Yebyu       4,751         81              0.06            1.7    
+-----------------------------------------------------------------------------------
+
+Table: Townships reached by number of beneficiaries
+
+"
+"0","  # kable(caption = ""Top 11 townships reached by number of beneficiaries"", "
+"0","  #       format.args = list(big.mark = "","")) %>%  "
+"0","  # footnote(""Only townships with more than 1% of the total beneficiaries are shown"", "
+"0","  #          general_title = """") %>%  "
+"0","  # kable_classic_2(""striped"")"
+"0"," "
+"0",""

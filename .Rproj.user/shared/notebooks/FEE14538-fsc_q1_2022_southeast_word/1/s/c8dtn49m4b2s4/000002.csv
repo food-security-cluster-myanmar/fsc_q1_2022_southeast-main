@@ -1,0 +1,27 @@
+"0","fsc_se %>% "
+"0","  sum_ben2(strat_obj, humanitarian_or_development) %>% "
+"0","  ungroup() %>%"
+"0","  pivot_wider(names_from = humanitarian_or_development, values_from = beneficiaries, values_fill = 0) %>% "
+"0","  mutate(strat_obj = fct_relevel(strat_obj, levels = c(""so_1"", ""so_2"", ""so_3"")), "
+"0","         Total = Development + Humanitarian, "
+"0","         strat_obj = str_to_upper(strat_obj)) %>%"
+"0","  adorn_totals(""row"") %>% "
+"0","  pander(caption = ""2022/Q1 beneficiaries by strategic objective"")"
+"1","
+--------------------------------------------------
+ strat_obj   Humanitarian   Development    Total  
+----------- -------------- ------------- ---------
+   SO_1         98,106           0        98,106  
+
+   SO_3         30,926          203       31,129  
+
+   Total       129,032          203       129,235 
+--------------------------------------------------
+
+Table: 2022/Q1 beneficiaries by strategic objective
+
+"
+"0","  # kable(caption = ""2022/Q1 beneficiaries by strategic objective"", format.args = list(big.mark = "","")) %>% "
+"0","  # kable_classic_2(""striped"", full_width = FALSE)"
+"0",""
+"0","# remember that kable does not work in word"
