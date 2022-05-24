@@ -3,8 +3,8 @@ title: "Snapshot report on the 5Ws"
 author: "Myanmar Food Security Cluster" 
 date: '2022-05-06'
 output:
-  word_document: default
-  pdf_document: default
+  word_document: 
+    toc: yes
 subtitle: First quarter 2022
 always_allow_html: yes
 ---
@@ -433,6 +433,7 @@ The newly approved ICCG Information Sharing Protocols have been implemented in t
 As in 2021, the number of beneficiaries reached has been heavily biased towards relatively few areas, which is not appropriate for a unionwide response. A total of `r distinct(fsc_se, admin3_pcode) %>% nrow()` townships have been reached across `r distinct(fsc_se, admin1_pcode) %>% nrow()` states/regions. 
 
 <br> 
+
 
 
 ```{r barplot-state-region}
@@ -1006,6 +1007,7 @@ As mentioned, food distributions had the vast majority of distributions falling 
 <br><br>
 
 ### 3.4 A closer look at food distributions
+
 
 The interactive plot below breaks down the range of USD per person cash transfer values by state. Similar to the plot above, each point is a distribution and more details about each distribution can be seen by hovering your mouse over each point. 
 
