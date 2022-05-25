@@ -15,6 +15,7 @@ output:
 always_allow_html: yes
 ---
 
+
 ```{css, echo=FALSE}
 
 #TOC::before {
@@ -27,6 +28,7 @@ always_allow_html: yes
   background-position: center center;
   background-repeat: no-repeat;
 }
+
 ```
 
 ```{=html}
@@ -1274,6 +1276,7 @@ fsc_disagg_values <- fsc_disagg %>%
   summarise(ben_sub = sum(ben_sub)) %>% 
   adorn_percentages("col") %>%  
   mutate(ben_sub = round(ben_sub * 100, digits = 2))
+
 ```
 
 Due to the problems in reporting disaggregated beneficiary data, two tests have been applied to the submitted 5W data. The first involves a comparison to the proportions of disaggregation groups in the census to determine if values have been backfilled from the census.  
@@ -1281,6 +1284,7 @@ Due to the problems in reporting disaggregated beneficiary data, two tests have 
 The plots below show the breakdowns between the "real" values and those that have been backfilled from the census. Approximately 59% of beneficiaries reported had "real" disaggregations; this is an improvement from 2021, where only 44% of beneficiaries had "real" disaggregations. 
 
 In the "real" values, it can be seen that the proportion of adult females reached is much higher than adult males -- this is in line with the Cluster's understanding of several activities that specifically target women. The percentages of elderly persons actually reached is also much lower than what has been reported. 
+
 
 <br>
 
@@ -1295,7 +1299,7 @@ fsc_disagg %>%
                               # c("elderly_female", "elderly_male", "adult_female", "adult_male", "child_female", "child_male")
                               )) %>% 
   adorn_percentages("col") %>% 
-  ggplot(aes(x = disagg, y = ben_freq, fill = disagg)) + 
+  ggplot(aes(x = disagg, y = ben_freq)) + 
   geom_col() + 
   geom_text(aes(label = round(ben_freq * 100, digits = 1)), size = 3, vjust = -0.3) +
   scale_y_continuous(labels = percent, breaks = seq(0, 0.4, by = 0.1)) +
@@ -1318,7 +1322,7 @@ fsc_disagg %>%
                               # c("elderly_female", "elderly_male", "adult_female", "adult_male", "child_female", "child_male")
                               )) %>% 
   adorn_percentages("col") %>% 
-  ggplot(aes(x = disagg, y = ben_freq, fill = disagg)) + 
+  ggplot(aes(x = disagg, y = ben_freq)) + 
   geom_col() + 
   geom_text(aes(label = round(ben_freq * 100, digits = 1)), size = 3, vjust = -0.3) +
   scale_y_continuous(labels = percent, breaks = seq(0, 0.4, by = 0.1)) +
