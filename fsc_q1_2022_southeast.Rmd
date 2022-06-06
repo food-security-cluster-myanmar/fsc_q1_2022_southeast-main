@@ -425,7 +425,6 @@ fsc %>%
   pivot_wider(names_from = strat_obj, values_from = beneficiaries, values_fill = 0, names_prefix = "ben_") %>% 
   mutate(Total = ben_SO_1 + ben_SO_2 + ben_SO_3, 
          `%_ben` = round(Total / sum(Total) * 100, digits = 2)) %>% 
- 
   select(activity = activity_red, ben_SO_1, ben_SO_2, ben_SO_3, Total, `%_ben`) %>% 
   kable(caption = "Breakdown of beneficiaries by activity in 2022/Q1", format.args = list(big.mark = ",")) %>% 
   kable_classic_2("striped")
@@ -442,9 +441,14 @@ fsc_se %>%
                                                          "No", was_nutrition_mainstreamed_in_activity), 
          was_nutrition_mainstreamed_in_activity = fct_relevel(was_nutrition_mainstreamed_in_activity, levels = c("Yes", "No"))) %>% 
   sum_ben2(strat_obj, was_nutrition_mainstreamed_in_activity) %>% 
+  # Putting in the 0s for SO2 here, similar to the chunk above
+  rbind(tribble(~strat_obj, ~was_nutrition_mainstreamed_in_activity, ~beneficiaries, 
+                "SO_2","No", 0, 
+                "SO_2", "Yes", 0)) %>%
   pivot_wider(names_from = strat_obj, values_from = beneficiaries) %>% 
   mutate(total_beneficiaries = SO_1 + SO_3, 
          `%_beneficiaries` = round(total_beneficiaries / sum(total_beneficiaries) * 100, digits = 2)) %>% 
+  relocate(SO_2, .after = SO_1) %>% 
   kable(caption = "Breakdown of benefeciaries by status of nutrition mainstreaming", format.args = list(big.mark = ",")) %>% 
   kable_classic_2("striped")
   
@@ -546,14 +550,14 @@ fsc_se %>%
          target = round(target)) %>% 
   # select can also rename columns 
   select(state, township, target, beneficiaries, `%_reached` = pc_reached, `%_beneficiaries` = pc_beneficiaries) %>% 
- 
-   # head(11) %>% 
+  # head(11) %>% 
   # remember that kable does not work in a word format, so use pander instead
   # pander(caption = "Top 11 towwnships reached by number of beneficiaries")
   kable(caption = "Townships reached by number of beneficiaries", 
         format.args = list(big.mark = ",")) %>%  
-  footnote("Only townships with more than 1% of the total beneficiaries are shown", 
-           general_title = "") %>%  
+  # Removing the footnote, since you're showing all the townships 
+  # footnote("Only townships with more than 3% of the total beneficiaries are shown", 
+  #          general_title = "") %>%  
   kable_classic_2("striped")
  
 
@@ -653,8 +657,9 @@ fsc_se %>%
   arrange(activity_red) %>% 
   mutate(activity_red = str_replace_all(activity_red, "provision of ", "")) %>%
   ggplot(aes(x = date, y = cum_ben, fill = activity_red)) +
-  geom_vline(colour = "black", lty = 2, xintercept = as.numeric(as.Date("2022-01-01")), alpha = 0.5) +
-  geom_vline(colour = "black", lty = 2, xintercept = as.numeric(as.Date("2021-06-01")), alpha = 0.5) +
+  # This is how you change the colour of the lines
+  geom_vline(colour = "red", lty = 2, xintercept = as.numeric(as.Date("2022-01-01")), alpha = 0.5) +
+  geom_vline(colour = "red", lty = 2, xintercept = as.numeric(as.Date("2021-06-01")), alpha = 0.5) +
   # can't use the other format since some activities only occurred in one month and won't show up otherwise
   geom_col() + 
   # geom_step(size = 0.6, aes(group = activity_red)) +
@@ -910,7 +915,8 @@ The x-axis shows the average value per person or per household, depending on the
 
 <br>
 
-```{r partner-cash-values, fig.height=6.5}
+```{r partner-cash-values, fig.height=6.5, eval=FALSE}
+# I put eval=FALSE in the header of this chunk. It will no longer run
 # this is a function that creates plots
 partner_mean_usd <- function(tbl, name){
 
@@ -1603,7 +1609,8 @@ fsc_se %>%
   geom_sf(data = pcode1_shape %>%  filter(state %in% c("Kayah", "Kayin", "Mon", "Tanintharyi")),
           alpha = 0, colour = "black", size = 0.5) + 
   scale_fill_viridis_c(direction = -1, trans = "log10", 
-                       breaks = c(100, 1000, 10000, 100000, 500000),
+                       # adding a 30000 break
+                       breaks = c(100, 1000, 10000, 30000, 100000, 500000),
                        labels = comma) + 
   theme_void() +
   theme(legend.text = element_text(size = 10),
@@ -1626,8 +1633,9 @@ pin %>%
   geom_sf(data = pcode1_shape %>%  filter(state %in% c("Kayah", "Kayin", "Mon", "Tanintharyi")),
           alpha = 0, colour = "black", size = 0.5) + 
   scale_fill_viridis_c(direction = -1, trans = "log10",  
-                       breaks = c(100, 1000, 10000, 100000, 500000),
-                       limits = range(57, 801760), 
+                       # adding a 30000 break
+                       breaks = c(100, 1000, 10000, 30000, 100000, 500000),
+                       # Removed on line here that was affecting putting the colours on the same scale
                        labels = comma) + 
   theme_void() + 
   theme(legend.text = element_text(size = 10),

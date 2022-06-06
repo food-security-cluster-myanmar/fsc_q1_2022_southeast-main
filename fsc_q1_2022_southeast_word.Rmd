@@ -408,9 +408,14 @@ fsc_se %>%
                                                          "No", was_nutrition_mainstreamed_in_activity), 
          was_nutrition_mainstreamed_in_activity = fct_relevel(was_nutrition_mainstreamed_in_activity, levels = c("Yes", "No"))) %>% 
   sum_ben2(strat_obj, was_nutrition_mainstreamed_in_activity) %>% 
+  # Putting in the 0s for SO2 here, similar to the chunk above
+  rbind(tribble(~strat_obj, ~was_nutrition_mainstreamed_in_activity, ~beneficiaries, 
+                "SO_2","No", 0, 
+                "SO_2", "Yes", 0)) %>%
   pivot_wider(names_from = strat_obj, values_from = beneficiaries) %>% 
   mutate(total_beneficiaries = SO_1 + SO_3, 
          `%_beneficiaries` = round(total_beneficiaries / sum(total_beneficiaries) * 100, digits = 2)) %>% 
+  relocate(SO_2, .after = SO_1) %>%
   # remember that kable does not work in a word format, so use pander instead
   pander(caption = "Breakdown of beneficiaries by status of nutrition mainstreaming")
   # kable(caption = "Breakdown of benefeciaries by status of nutrition mainstreaming", format.args = list(big.mark = ",")) %>% 
@@ -506,16 +511,17 @@ Just 4 townships (listed in the table below) contained 63% of all beneficiaries.
 
 fsc_se %>% 
   group_by(state, township, admin3_pcode_old) %>% 
-  summarise(beneficiaries = sum(new_beneficiaries, na.rm = TRUE), .groups="drop") %>%
+  summarise(beneficiaries = sum(new_beneficiaries, na.rm = TRUE)) %>%
   left_join(pin %>% select(admin3_pcode, target = fs_targeted), by = c("admin3_pcode_old" = "admin3_pcode"), .groups = "drop") %>%
   ungroup() %>% 
+  # this sorts the table
   arrange(desc(beneficiaries)) %>% 
   mutate(pc_beneficiaries = round(beneficiaries / sum(beneficiaries) * 100, digits = 2),  
          pc_reached = round(beneficiaries / target * 100, digits = 2), 
          pc_reached = ifelse(is.infinite(pc_reached), 100, pc_reached), 
          target = round(target)) %>% 
-  select(state, township, target, beneficiaries, `%_beneficiaries` = pc_beneficiaries, `%_reached` = pc_reached) %>% 
-  
+  # select can also rename columns 
+  select(state, township, target, beneficiaries, `%_reached` = pc_reached, `%_beneficiaries` = pc_beneficiaries) %>% 
   # head(11) %>% 
   pander(caption = "Townships reached by number of beneficiaries")
   # kable(caption = "Top 11 townships reached by number of beneficiaries", 
@@ -622,8 +628,8 @@ fsc_se %>%
   arrange(activity_red) %>% 
   mutate(activity_red = str_replace_all(activity_red, "provision of ", "")) %>%
   ggplot(aes(x = date, y = cum_ben, fill = activity_red)) +
-  geom_vline(colour = "black", lty = 2, xintercept = as.numeric(as.Date("2022-01-01")), alpha = 0.5) +
-  geom_vline(colour = "black", lty = 2, xintercept = as.numeric(as.Date("2021-06-01")), alpha = 0.5) +
+  geom_vline(colour = "red", lty = 2, xintercept = as.numeric(as.Date("2022-01-01")), alpha = 0.5) +
+  geom_vline(colour = "red", lty = 2, xintercept = as.numeric(as.Date("2021-06-01")), alpha = 0.5) +
   # can't use the other format since some activities only occurred in one month and won't show up otherwise
   geom_col() + 
   # geom_step(size = 0.6, aes(group = activity_red)) +
@@ -876,7 +882,9 @@ The x-axis shows the average value per person or per household, depending on the
 
 <br>
 
-```{r partner-cash-values, fig.height=6.5}
+```{r partner-cash-values, fig.height=6.5, eval=FALSE}
+# eval=FALSE means that this chunk will no longer run 
+
 partner_mean_usd <- function(tbl, name){
 
   tbl %>% 
@@ -1555,7 +1563,7 @@ fsc_se %>%
   geom_sf(data = pcode1_shape %>%  filter(state %in% c("Kayah", "Kayin", "Mon", "Tanintharyi")),
           alpha = 0, colour = "black", size = 0.5)+
   scale_fill_viridis_c(direction = -1, trans = "log10", 
-                       breaks = c(100, 1000, 10000, 100000, 500000),
+                       breaks = c(100, 1000, 10000, 30000, 100000, 500000),
                        labels = comma) + 
   theme_void() +
   theme(legend.text = element_text(size = 10),
@@ -1578,8 +1586,7 @@ pin %>%
   geom_sf(data = pcode1_shape %>%  filter(state %in% c("Kayah", "Kayin", "Mon", "Tanintharyi")),
           alpha = 0, colour = "black", size = 0.5)+
   scale_fill_viridis_c(direction = -1, trans = "log10",  
-                       breaks = c(100, 1000, 10000, 100000, 500000),
-                       limits = range(57, 801760), 
+                       breaks = c(100, 1000, 10000, 30000, 100000, 500000),
                        labels = comma) + 
   theme_void() + 
   theme(legend.text = element_text(size = 10),
